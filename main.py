@@ -4,15 +4,17 @@ CLI app for managing student records.
 Uses sorting and searching algorithms from algorithms.py
 """
 
-from algorithms import bubble_sort, quick_sort, binary_search_by_id
+from algorithms import bubble_sort_nbs, quick_sort_nbs, binary_search_by_id_nbs
 from collections import deque
 
+# In-memory data storage
 students_nbs = []
 action_queue_nbs = deque(maxlen=10)  # store recent actions
-SORT_ALGOS_nbs = {"1": bubble_sort, "2": quick_sort}
+SORT_ALGOS_nbs = {"1": bubble_sort_nbs, "2": quick_sort_nbs}
 
 
 def display_students_nbs(data_nbs):
+    """Display the list of students in a table format."""
     if not data_nbs:
         print("\nNo students found.\n")
         return
@@ -24,18 +26,23 @@ def display_students_nbs(data_nbs):
 
 
 def add_student_nbs():
+    """Add a new student record."""
     sid_nbs = input("Enter student ID: ").strip()
     name_nbs = input("Enter student name: ").strip()
     grade_nbs = float(input("Enter grade: "))
+
     students_nbs.append({"id": sid_nbs, "name": name_nbs, "grade": grade_nbs})
     action_queue_nbs.append(f"Added student {name_nbs} (ID: {sid_nbs})")
-    print("Student added.\n")
+
+    print("Student added successfully.\n")
 
 
 def edit_student_nbs():
+    """Edit an existing student's information."""
     sid_nbs = input("Enter ID of student to edit: ").strip()
     sorted_by_id_nbs = sorted(students_nbs, key=lambda x: x["id"])
-    idx_nbs = binary_search_by_id(sorted_by_id_nbs, sid_nbs)
+    idx_nbs = binary_search_by_id_nbs(sorted_by_id_nbs, sid_nbs)
+
     if idx_nbs == -1:
         print("Student not found.\n")
         return
@@ -47,22 +54,24 @@ def edit_student_nbs():
             if new_grade_nbs:
                 s_nbs["grade"] = float(new_grade_nbs)
             action_queue_nbs.append(f"Edited student {sid_nbs}")
-            print("Student updated.\n")
+            print("Student updated successfully.\n")
             return
 
 
 def delete_student_nbs():
+    """Delete a student by ID."""
     sid_nbs = input("Enter ID of student to delete: ").strip()
     for s_nbs in students_nbs:
         if s_nbs["id"] == sid_nbs:
             students_nbs.remove(s_nbs)
             action_queue_nbs.append(f"Deleted student {sid_nbs}")
-            print("Student deleted.\n")
+            print("Student deleted successfully.\n")
             return
     print("Student not found.\n")
 
 
 def sort_students_nbs():
+    """Sort the students by name or grade using Bubble Sort or Quick Sort."""
     if not students_nbs:
         print("No students to sort.\n")
         return
@@ -73,25 +82,27 @@ def sort_students_nbs():
 
     print("Choose algorithm: 1) Bubble Sort  2) Quick Sort")
     algo_choice_nbs = input("Enter choice: ").strip()
-    algo_nbs = SORT_ALGOS_nbs.get(algo_choice_nbs, bubble_sort)
+    algo_nbs = SORT_ALGOS_nbs.get(algo_choice_nbs, bubble_sort_nbs)
 
     reverse_nbs = input("Reverse order? (y/n): ").lower().startswith("y")
 
-    sorted_list_nbs = algo_nbs(students_nbs, key=key_nbs, reverse=reverse_nbs)
+    sorted_list_nbs = algo_nbs(students_nbs, key_nbs, reverse_nbs)
     display_students_nbs(sorted_list_nbs)
+
     action_queue_nbs.append(
         f"Sorted students by {'name' if sort_key_choice_nbs == '1' else 'grade'} using {algo_nbs.__name__}"
     )
 
 
 def search_student_nbs():
+    """Search for a student by ID using binary search."""
     if not students_nbs:
         print("No students in the list.\n")
         return
 
     target_id_nbs = input("Enter student ID to search: ").strip()
     sorted_by_id_nbs = sorted(students_nbs, key=lambda s: s["id"])
-    idx_nbs = binary_search_by_id(sorted_by_id_nbs, target_id_nbs)
+    idx_nbs = binary_search_by_id_nbs(sorted_by_id_nbs, target_id_nbs)
 
     if idx_nbs != -1:
         print("\n Student found:")
@@ -104,6 +115,7 @@ def search_student_nbs():
 
 
 def show_recent_actions_nbs():
+    """Display the most recent actions."""
     print("\nRecent actions:")
     if not action_queue_nbs:
         print("No actions yet.\n")
@@ -114,6 +126,7 @@ def show_recent_actions_nbs():
 
 
 def main_menu_nbs():
+    """Main CLI menu loop."""
     while True:
         print("""
 ==============================

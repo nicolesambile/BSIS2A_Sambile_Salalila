@@ -1,5 +1,5 @@
 """
-algorithms_nbs.py
+algorithms.py
 
 Contains sorting and searching algorithms used by the CLI app.
 - Bubble Sort
